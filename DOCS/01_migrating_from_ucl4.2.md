@@ -34,7 +34,7 @@ Let's look at how to translate common UCL 4.2 patterns to UCL 5.0.
 ### 1. Message Envelope
 
 **UCL 4.2:**
-```ucl
+```
 @prefix schema: <http://schema.org/>
 ucl:id:MyAgent > ucl:service:KB query schema:Book ...
 
@@ -46,12 +46,7 @@ UCL 5.0:
 @prefix cm: <http://ucl-spec.org/5.0/context-mixer#>
 
 ucl:id:MyAgent > ucl:service:KB execute schema:QueryBookAction ^cm:profile cm:profile:BookQueryProfile ...
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Ucl
-IGNORE_WHEN_COPYING_END
+```
 
 Change: query schema:Book becomes execute schema:QueryBookAction. The specific action (QueryBookAction) is now a UCL-ID itself.
 
@@ -62,7 +57,7 @@ New: A Context Mixer profile (^cm:profile cm:profile:BookQueryProfile) is typica
 This is the most significant change.
 
 UCL 4.2 (JSON-like Map):
-
+```
 // ... OperationPart ... :
 {
   schema:name: "1984",
@@ -71,14 +66,10 @@ UCL 4.2 (JSON-like Map):
 }
 // ... ContextStackPart ...
 IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Ucl
-IGNORE_WHEN_COPYING_END
+```
 
 UCL 5.0 (Graph Payload):
-
+```
 // ... Operation_UCLID ^Modifiers ... :
 {
   (ucl:this) ucl:hasParameter [
@@ -98,19 +89,14 @@ UCL 5.0 (Graph Payload):
   ] .
 }
 // ... Optional ContextStackPart ...
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Ucl
-IGNORE_WHEN_COPYING_END
+```
 
 Change: Instead of a simple key-value map, the payload now consists of explicit semantic triples. (ucl:this) refers to the main subject of the payload (e.g., the query instance or the entity being described).
 
 Structure: We use constructs like schema:PropertyValue (or similar patterns) to clearly define parameters with their property ID and value. This is more verbose but far more explicit and flexible for complex relationships.
 
 Alternative Simpler Graph (if ontologies define properties directly):
-
+```
 // ... Operation_UCLID ^Modifiers ... :
 {
   (ucl:this) a schema:BookQueryCriteria ; // Or a custom type for the query
@@ -118,40 +104,26 @@ Alternative Simpler Graph (if ontologies define properties directly):
              schema:author wd:Q3395 ;
              ucl:param:editionYear 1949 .
 }
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Ucl
-IGNORE_WHEN_COPYING_END
+```
 
 This simpler graph form is preferred if your Operation_UCLID implies a subject that can directly have these properties (e.g., schema:name is a property applicable to schema:BookQueryCriteria).
 
 UCL 4.2 (List):
-
+```
 // ... : [ "apple", "banana", "cherry" ] ...
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Ucl
-IGNORE_WHEN_COPYING_END
+```
+
 
 UCL 5.0 (RDF List in Graph):
-
+```
 // ... :
 {
   (ucl:this) ucl:hasFruitList ( "apple" "banana" "cherry" ) . // Using RDF list shorthand
 }
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Ucl
-IGNORE_WHEN_COPYING_END
+```
 
 Or, more explicitly with individual items:
-
+```
 // ... :
 {
   (ucl:this) ucl:hasFruit item:Apple ;
@@ -160,45 +132,30 @@ Or, more explicitly with individual items:
   item:Apple a ucl:Fruit ; schema:name "apple" .
   // ... similar for Banana, Cherry
 }
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Ucl
-IGNORE_WHEN_COPYING_END
+```
 
 The choice depends on the desired level of semantic detail for list items.
 
 3. Context
 
 UCL 4.2 (Mandatory Context Stack):
-
+```
 # ucl:context:LiteraryWork / ucl:context:InformationRequest
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Ucl
-IGNORE_WHEN_COPYING_END
+```
 
 UCL 5.0 (Context Mixer + Optional Stack):
 The primary way to provide context is via a Context Mixer Profile, specified as a modifier:
-
+```
 // ... execute myapp:action:AnalyzeSentiment ^cm:profile cm:profile:LiteraryReviewAnalysis ... :
 // ...
 // Optional, broader stack:
 # ucl_meta:project:Alpha / ucl:department:Research
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Ucl
-IGNORE_WHEN_COPYING_END
+```
 
 The cm:profile:LiteraryReviewAnalysis would be defined (likely elsewhere, or in a dedicated part of the message payload if it's a dynamic profile) to include aspects like ucl:context:LiteraryWork and ucl:context:InformationRequest, possibly with weights or specific filters.
 
 cm:Profile Definition Example (Conceptual, within a UCL message or a knowledge base):
-
+```
 @prefix cm: <http://ucl-spec.org/5.0/context-mixer#> .
 @prefix ucl_ctx: <http://ucl-spec.org/context#> . # Hypothetical context namespace
 
@@ -208,12 +165,7 @@ cm:profile:LiteraryReviewAnalysis a cm:Profile ;
         [ a cm:FocusElement ; cm:onAspect ucl_ctx:SentimentAnalysis ; cm:withWeight 0.8 ; cm:withFilter "focus on emotional tone" ] ,
         [ a cm:FocusElement ; cm:onAspect ucl_ctx:InformationRequest ; cm:withWeight 0.5 ] ;
     cm:appliesStrategy cm:WeightedSum .
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Turtle
-IGNORE_WHEN_COPYING_END
+```
 
 Benefit: The Context Mixer allows for a much richer specification of how different contextual factors should influence processing. The old Context Stack can still be used for very high-level, less dynamic categorization.
 
@@ -223,43 +175,29 @@ The principles remain the same: use @prefix for brevity and URIs for canonical i
 UCL 5.0 encourages clear namespacing for all custom terms.
 
 UCL 4.2:
-
+```
 @prefix schema: <http://schema.org/>
 // ... uses schema:Book ...
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Ucl
-IGNORE_WHEN_COPYING_END
+```
 
 UCL 5.0 (No change in principle):
-
+```
 @prefix schema: <http://schema.org/>
 // ... uses schema:Book ...
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Ucl
-IGNORE_WHEN_COPYING_END
+```
 
 However, for custom application terms (like specific actions or parameters not in standard ontologies), UCL 5.0 would strongly recommend defining your own namespace:
-
+```
 @prefix myapp: <http://example.com/myapp-ontology#>
 // ...
 // ... execute myapp:action:ProcessUserData ...
 // ... { (ucl:this) myapp:hasCustomParameter "value" . } ...
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Ucl
-IGNORE_WHEN_COPYING_END
+```
+
 Example: Simple Query Migration
 
 UCL 4.2 (from your examples01_simple_query.TXT):
-
+```
 @prefix schema: <http://schema.org/>
 @prefix wd: <http://www.wikidata.org/entity/>
 @prefix ucl: <http://ucl-spec.org/4.1/core#> // Note: Version 4.1 in example
@@ -270,15 +208,10 @@ ucl:id:UserQueryAgent001 > ucl:service:KnowledgeBaseService query schema:Book :
     schema:author: wd:Q3395 // Wikidata ID for George Orwell
   }
 # ucl:context:LiteraryWork / ucl:context:InformationRequest
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Ucl
-IGNORE_WHEN_COPYING_END
+```
 
 UCL 5.0 Equivalent:
-
+```
 @prefix schema: <http://schema.org/>
 @prefix wd: <http://www.wikidata.org/entity/>
 @prefix ucl: <http://ucl-spec.org/5.0/core#>
@@ -305,12 +238,8 @@ ucl:id:UserQueryAgent001 > ucl:service:KnowledgeBaseService execute myapp:action
              schema:author wd:Q3395 .
 }
 # ucl_meta:project:DigitalLibraryQuerySystem // Optional broader context
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Ucl
-IGNORE_WHEN_COPYING_END
+```
+
 Summary of Key Mindset Shifts for Migration
 
 Think in Triples for Payloads: Your data is now a set of explicit relationships, not just nested key-value pairs.
