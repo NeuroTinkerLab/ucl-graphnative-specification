@@ -94,7 +94,7 @@ Is there any very broad, stable context to add?
 
 Now, put all the pieces together.
 
-```ucl
+```
 @prefix schema: <http://schema.org/>
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix ucl: <http://ucl-spec.org/5.0/core#>
@@ -142,7 +142,7 @@ ucl:id:NewsDeskEditor > llm:agent:ContentGenerationAI_v3 execute myapp:action:Ge
         myapp:publicationDateTarget "2024-03-20"^^xsd:date .
 }
 # ucl_publication:FutureTechReview / ucl_project:SeriesOnBreakthroughs
-
+```
 Considerations for Advanced Prompts
 
 Vocabulary Management: Ensure that all UCL-IDs (especially custom ones like myapp:, ucl_style:, etc.) are well-defined, ideally in accessible ontologies or vocabularies that the target AI system can understand or be taught.
