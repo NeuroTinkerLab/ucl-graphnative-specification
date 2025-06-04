@@ -38,7 +38,7 @@ ucl:id:MyQueryAgent > ucl:service:KnowledgeBase query schema:Book :
     schema:author: wd:Q3395 // wd:Q3395 is the Wikidata ID for George Orwell
   }
 # ucl:context:LiteraryWork / ucl:context:InformationRequest
-
+```
 
 Explanation of the example:
 
@@ -105,7 +105,7 @@ UCL is a conceptual work-in-progress that hopes to contribute to making AI inter
 **Inizio Generazione File: `PRESENTATION_QUICK_GUIDE.md` (UCL 5.0 Repository)**
 ---
 
-```markdown
+```
 # UCL 5.0 "GraphNative" - Quick Guide
 
 This guide provides a fast overview of UCL 5.0, its purpose, its key advancements, and its benefits for precise AI communication.
