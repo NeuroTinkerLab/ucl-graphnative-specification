@@ -8,7 +8,7 @@ UCL 5.0 introduces a more expressive graph-native payload and a sophisticated Co
 
 Let's break down a UCL 5.0 message. Imagine you want to instruct an AI service to generate a short product description for a new eco-friendly water bottle, keeping a specific target audience and tone in mind.
 
-```ucl
+```
 // 1. Prefix Declarations (Define shortcuts for URIs)
 @prefix schema: <http://schema.org/>
 @prefix ucl: <http://ucl-spec.org/5.0/core#>
@@ -33,9 +33,9 @@ ucl:id:MarketingDept > llm:agent:ProductDescWriter execute myapp:action:Generate
     myprd:capacity "750ml" .
 }
 # ucl_project:NewProductLaunch // Optional, broader Context Stack
+```
 
 
-Let's dissect this UCL 5.0 message:
 
 1. Prefix Declarations
 @prefix schema: <http://schema.org/>
