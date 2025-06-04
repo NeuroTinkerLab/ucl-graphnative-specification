@@ -1,4 +1,4 @@
-```
+``
 # Core Concepts of UCL 5.0: The UCL Message Envelope
 
 Every UCL 5.0 "GraphNative" message begins with an **Envelope**. The envelope provides essential routing information, defines the primary operation, and associates high-level modifiers like a Context Mixer Profile. It sets the stage before the detailed `PayloadGraph` is presented.
