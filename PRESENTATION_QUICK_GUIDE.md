@@ -105,7 +105,7 @@ UCL is a conceptual work-in-progress that hopes to contribute to making AI inter
 **Inizio Generazione File: `PRESENTATION_QUICK_GUIDE.md` (UCL 5.0 Repository)**
 ---
 
-```
+
 # UCL 5.0 "GraphNative" - Quick Guide
 
 This guide provides a fast overview of UCL 5.0, its purpose, its key advancements, and its benefits for precise AI communication.
@@ -133,7 +133,7 @@ UCL 5.0 offers significant advantages:
 
 Instructing an AI to generate a product description, guided by a specific style:
 
-```ucl
+```
 // Prefixes define shortcuts for URIs
 @prefix schema: <http://schema.org/>
 @prefix ucl: <http://ucl-spec.org/5.0/core#>
@@ -153,11 +153,7 @@ ucl:id:MarketingDept > llm:agent:ProductDescWriter execute myapp:action:Generate
     schema:description "Stylish, reusable, 100% plant-based." .
 }
 // Optional # ucl_project:ProductLaunch // Broader context
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-IGNORE_WHEN_COPYING_END
+```
 
 Explanation of Key UCL 5.0 Elements:
 
