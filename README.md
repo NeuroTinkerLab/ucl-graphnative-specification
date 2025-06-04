@@ -38,24 +38,24 @@ UCL 5.0 messages are built upon these enhanced core ideas:
 ## 📚 Get Started & Learn More
 
 *   **Dive into the Documentation:**
-    *   [`docs/00_welcome_to_ucl5.md`](./docs/00_welcome_to_ucl5.md) - Your first welcome to UCL 5.0.
-    *   [`docs/01_migrating_from_ucl4.2.md`](./docs/01_migrating_from_ucl4.2.md) - Essential guide for users of previous versions.
-    *   [`docs/02_introduction_and_goals_ucl5.md`](./docs/02_introduction_and_goals_ucl5.md) - Understand the "why" behind UCL 5.0.
-    *   [`docs/03_getting_started_ucl5.md`](./docs/03_getting_started_ucl5.md) - Your first steps with UCL 5.0 syntax and concepts.
-    *   [`docs/04_core_concepts_ucl5/01_graph_native_representation.md`](./docs/04_core_concepts_ucl5/01_graph_native_representation.md) - Deep dive into graph payloads, envelopes, UCL-IDs.
-    *   [`docs/05_context_mixer_deep_dive/01_introduction_to_cm.md`](./docs/05_context_mixer_deep_dive/01_introduction_to_cm.md) - Master the powerful Context Mixer.
-    *   [`docs/06_syntax_in_detail_ucl5.md`](./docs/06_syntax_in_detail_ucl5.md) - The complete textual syntax reference.
-    *   [`docs/08_ucl5_and_llms/01_optimizing_llm_communication.md`](./docs/08_ucl5_and_llms/01_optimizing_llm_communication.md) - Specifics on using UCL 5.0 with Large Language Models.
-    *   [`docs/09_use_cases_and_benefits_ucl5.md`](./docs/09_use_cases_and_benefits_ucl5.md) - Explore what you can achieve with UCL 5.0.
-    *   [`docs/10_building_an_advanced_ucl_prompt.md`](./docs/10_building_an_advanced_ucl_prompt.md) - Tutorial on crafting sophisticated UCL 5.0 messages.
-    *   [`docs/11_future_directions.md`](./docs/11_future_directions.md) - Our vision for what's next.
-*   **Practical Examples:** [`examples/`](./examples/) - See UCL 5.0 in action, including migration examples and advanced scenarios.
+    *   [`docs/00_welcome_to_ucl5.md`](docs/00_welcome_to_ucl5.md) - Your first welcome to UCL 5.0.
+    *   [`docs/01_migrating_from_ucl4.2.md`](docs/01_migrating_from_ucl4.2.md) - Essential guide for users of previous versions.
+    *   [`docs/02_introduction_and_goals_ucl5.md`](docs/02_introduction_and_goals_ucl5.md) - Understand the "why" behind UCL 5.0.
+    *   [`docs/03_getting_started_ucl5.md`](docs/03_getting_started_ucl5.md) - Your first steps with UCL 5.0 syntax and concepts.
+    *   [`docs/04_core_concepts_ucl5/01_graph_native_representation.md`](docs/04_core_concepts_ucl5/01_graph_native_representation.md) - Deep dive into graph payloads, envelopes, UCL-IDs.
+    *   [`docs/05_context_mixer_deep_dive/01_introduction_to_cm.md`](docs/05_context_mixer_deep_dive/01_introduction_to_cm.md) - Master the powerful Context Mixer.
+    *   [`docs/06_syntax_in_detail_ucl5.md`](docs/06_syntax_in_detail_ucl5.md) - The complete textual syntax reference.
+    *   [`docs/08_ucl5_and_llms/01_optimizing_llm_communication.md`](docs/08_ucl5_and_llms/01_optimizing_llm_communication.md) - Specifics on using UCL 5.0 with Large Language Models.
+    *   [`docs/09_use_cases_and_benefits_ucl5.md`](docs/09_use_cases_and_benefits_ucl5.md) - Explore what you can achieve with UCL 5.0.
+    *   [`docs/10_building_an_advanced_ucl_prompt.md`](docs/10_building_an_advanced_ucl_prompt.md) - Tutorial on crafting sophisticated UCL 5.0 messages.
+    *   [`docs/11_future_directions.md`](docs/11_future_directions.md) - Our vision for what's next.
+*   **Practical Examples:** [`examples/`](examples/) - See UCL 5.0 in action, including migration examples and advanced scenarios.
 *   **Full Specification (Under Development):** A formal `SPECIFICATION.MD` for UCL 5.0 is a goal. The `docs/` currently serve as the descriptive specification.
 *   **Quick Overview:** (A `PRESENTATION_QUICK_GUIDE_UCL5.md` will be created).
 
 ## 🤝 Contributing
 
-UCL 5.0 is envisioned as a collaborative, evolving standard. We welcome contributions! Please read our [`CONTRIBUTING.md`](./CONTRIBUTING.md) guide to learn how you can help improve the specification, documentation, examples, or develop tooling.
+UCL 5.0 is envisioned as a collaborative, evolving standard. We welcome contributions! Please read our [`CONTRIBUTING.md`](CONTRIBUTING.md) guide to learn how you can help improve the specification, documentation, examples, or develop tooling.
 
 (A `CODE_OF_CONDUCT.md` should also be present for community guidelines).
 
