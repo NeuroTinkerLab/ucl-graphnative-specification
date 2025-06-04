@@ -176,7 +176,7 @@ Literal            = StringLiteral / NumericLiteral / BooleanLiteral / TypedLite
 WS                 = %x20 / %x09 / %x0D / %x0A ; Whitespace
 NL                 = %x0A / %x0D / %x0D.0A
 COMMENT            = "//" *(%x00-09 / %x0B-0C / %x0E-7F) NL ; Basic comment
-
+```
 
 (Note: The ABNF above is a high-level conceptual outline and would need significant refinement and detail to be a complete, normative grammar, especially for the PayloadGraphBlock which should align with a subset of Turtle.)
 
