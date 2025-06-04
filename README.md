@@ -42,10 +42,10 @@ UCL 5.0 messages are built upon these enhanced core ideas:
     *   [`docs/01_migrating_from_ucl4.2.md`](./docs/01_migrating_from_ucl4.2.md) - Essential guide for users of previous versions.
     *   [`docs/02_introduction_and_goals_ucl5.md`](./docs/02_introduction_and_goals_ucl5.md) - Understand the "why" behind UCL 5.0.
     *   [`docs/03_getting_started_ucl5.md`](./docs/03_getting_started_ucl5.md) - Your first steps with UCL 5.0 syntax and concepts.
-    *   [`docs/04_core_concepts_ucl5/`](./docs/04_core_concepts_ucl5/) - Deep dive into graph payloads, envelopes, UCL-IDs.
-    *   [`docs/05_context_mixer_deep_dive/`](./docs/05_context_mixer_deep_dive/) - Master the powerful Context Mixer.
+    *   [`docs/04_core_concepts_ucl5/01_graph_native_representation.md`](./docs/04_core_concepts_ucl5/01_graph_native_representation.md) - Deep dive into graph payloads, envelopes, UCL-IDs.
+    *   [`docs/05_context_mixer_deep_dive/01_introduction_to_cm.md`](./docs/05_context_mixer_deep_dive/01_introduction_to_cm.md) - Master the powerful Context Mixer.
     *   [`docs/06_syntax_in_detail_ucl5.md`](./docs/06_syntax_in_detail_ucl5.md) - The complete textual syntax reference.
-    *   [`docs/08_ucl5_and_llms/`](./docs/08_ucl5_and_llms/) - Specifics on using UCL 5.0 with Large Language Models.
+    *   [`docs/08_ucl5_and_llms/01_optimizing_llm_communication.md`](./docs/08_ucl5_and_llms/01_optimizing_llm_communication.md) - Specifics on using UCL 5.0 with Large Language Models.
     *   [`docs/09_use_cases_and_benefits_ucl5.md`](./docs/09_use_cases_and_benefits_ucl5.md) - Explore what you can achieve with UCL 5.0.
     *   [`docs/10_building_an_advanced_ucl_prompt.md`](./docs/10_building_an_advanced_ucl_prompt.md) - Tutorial on crafting sophisticated UCL 5.0 messages.
     *   [`docs/11_future_directions.md`](./docs/11_future_directions.md) - Our vision for what's next.
