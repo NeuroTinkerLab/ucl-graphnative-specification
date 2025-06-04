@@ -1,4 +1,4 @@
-```
+``
 # Core Concepts of UCL 5.0: Graph-Native Representation
 
 A cornerstone of UCL 5.0 "GraphNative" is its adoption of a **graph-native representation for the message payload**. This marks a significant evolution from the JSON-like map/list structure of UCL 4.2 and is key to UCL 5.0's enhanced semantic precision and expressive power.
