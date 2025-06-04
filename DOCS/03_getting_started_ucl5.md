@@ -41,12 +41,7 @@ Let's dissect this UCL 5.0 message:
 @prefix schema: <http://schema.org/>
 @prefix ucl: <http://ucl-spec.org/5.0/core#>
 // ... and so on
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Ucl
-IGNORE_WHEN_COPYING_END
+
 
 What it is: Same as in UCL 4.2, these lines define shortcuts (prefixes like schema:) for long URIs (like <http://schema.org/>). This makes the rest of the message more readable.
 
@@ -81,12 +76,6 @@ cm:profile:EcoProductBrief is the value – a UCL-ID referencing a specific Cont
 
 3. Payload Graph Separator
 :
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Ucl
-IGNORE_WHEN_COPYING_END
 
 What it is: A single colon.
 
@@ -147,12 +136,7 @@ Clarity: Each piece of information is an explicit statement with semantically de
 
 5. Context Stack (Optional)
 # ucl_project:NewProductLaunch
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Ucl
-IGNORE_WHEN_COPYING_END
+
 
 What it is: Similar to UCL 4.2, an optional stack for very broad contextual framing, prefixed by #.
 
