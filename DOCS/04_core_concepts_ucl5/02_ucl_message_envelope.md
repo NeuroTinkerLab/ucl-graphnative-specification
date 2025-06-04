@@ -1,3 +1,4 @@
+```
 # Core Concepts of UCL 5.0: The UCL Message Envelope
 
 Every UCL 5.0 "GraphNative" message begins with an **Envelope**. The envelope provides essential routing information, defines the primary operation, and associates high-level modifiers like a Context Mixer Profile. It sets the stage before the detailed `PayloadGraph` is presented.
@@ -8,7 +9,9 @@ The structure of the UCL 5.0 envelope is designed for clarity and to directly su
 
 The canonical textual structure of a UCL 5.0 message envelope is:
 
-`[Source_UCLID] > Target_UCLID execute Operation_UCLID [^ModifierPredicate1 ModifierValue1] [^ModifierPredicate2 ModifierValue2] ... :`
+```text
+[Source_UCLID] > Target_UCLID execute Operation_UCLID [^ModifierPredicate1 ModifierValue1] [^ModifierPredicate2 ModifierValue2] ... :
+```
 
 Let's break down each component:
 
@@ -24,7 +27,7 @@ Let's break down each component:
     *   **Optionality & Default:** While often present for clarity, if the `Source_UCLID` is omitted, the `>` is also typically omitted. The default direction is generally assumed to be towards the `Target_UCLID` for a request. UCL 5.0 simplifies this from UCL 4.2's multiple direction tokens, as complex interaction patterns (like responses or broadcasts) can be modeled via the `Operation_UCLID` semantics or specific Context Mixer profiles.
 
 3.  **`Target_UCLID` (Mandatory)**
-    *   **Purpose:** Identifies the primary recipient, aporprocess, or entity the message is addressed to or primarily concerns.
+    *   **Purpose:** Identifies the primary recipient, process, or entity the message is addressed to or primarily concerns.
     *   **Format:** A UCL-ID.
     *   **Example:** `llm:agent:AdvancedTextGenerator` or `ucl:service:KnowledgeGraphInterface`
 
@@ -57,34 +60,29 @@ Let's break down each component:
 **Simple Execution:**
 ```ucl
 llm:agent:MyLLM execute myapp:action:SummarizeText :
-
-
+```
 (PayloadGraph would follow)
 
-With Source and Context Mixer Profile:
-
+**With Source and Context Mixer Profile:**
+```ucl
 ucl:id:ReportingSystem > ucl:service:AnalyticsEngine execute fin_ont:action:GenerateQuarterlyReport ^cm:profile cm:profile:FinanceReportStrict ^ucl_meta:outputFormat "PDF" :
-
+```
 (PayloadGraph would follow)
 
-Minimal (Target and Operation only):
-
+**Minimal (Target and Operation only):**
+```ucl
 ucl:service:DeviceManager execute iot:action:GetDeviceStatus :
-
-
+```
 (PayloadGraph would follow)
 
-Comparison with UCL 4.2 Envelope
+## Comparison with UCL 4.2 Envelope
 
 UCL 5.0 simplifies and restructures the envelope compared to UCL 4.2:
 
-OperationVerb and OperationID_UCLID merged: UCL 4.2 had OperationVerb UCLID_OperationSpecific. UCL 5.0 primarily uses execute Operation_UCLID, making Operation_UCLID carry more semantic weight for the specific action.
+*   **OperationVerb and OperationID_UCLID merged:** UCL 4.2 had `OperationVerb UCLID_OperationSpecific`. UCL 5.0 primarily uses `execute Operation_UCLID`, making `Operation_UCLID` carry more semantic weight for the specific action.
+*   **ModifiersPart integrated:** UCL 4.2 had a distinct `ModifiersPart` (`^mod1 ^mod2`). UCL 5.0 integrates modifiers directly onto the operation line using the `^Predicate Value` syntax, making them more explicitly key-value pairs.
+*   **Direction simplified:** `>` is the primary explicit direction, focusing on request-response, with other patterns modeled differently.
 
-ModifiersPart integrated: UCL 4.2 had a distinct ModifiersPart (^mod1 ^mod2). UCL 5.0 integrates modifiers directly onto the operation line using the ^Predicate Value syntax, making them more explicitly key-value pairs.
+The UCL 5.0 envelope is designed to be a clear, concise header that sets up the more detailed and expressive `PayloadGraph` and the sophisticated `ContextMixer` operations.
 
-Direction simplified: > is the primary explicit direction, focusing on request-response, with other patterns modeled differently.
-
-The UCL 5.0 envelope is designed to be a clear, concise header that sets up the more detailed and expressive PayloadGraph and the sophisticated ContextMixer operations.
-
-Next: Core Concepts of UCL 5.0: Modifiers and the Payload Graph Separator
-
+```
