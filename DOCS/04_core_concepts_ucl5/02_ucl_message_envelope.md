@@ -64,24 +64,13 @@ llm:agent:MyLLM execute myapp:action:SummarizeText :
 With Source and Context Mixer Profile:
 
 ucl:id:ReportingSystem > ucl:service:AnalyticsEngine execute fin_ont:action:GenerateQuarterlyReport ^cm:profile cm:profile:FinanceReportStrict ^ucl_meta:outputFormat "PDF" :
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Ucl
-IGNORE_WHEN_COPYING_END
 
 (PayloadGraph would follow)
 
 Minimal (Target and Operation only):
 
 ucl:service:DeviceManager execute iot:action:GetDeviceStatus :
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Ucl
-IGNORE_WHEN_COPYING_END
+
 
 (PayloadGraph would follow)
 
