@@ -1,0 +1,39 @@
+// UCL 5.0 Example: Simple Query for Information (Migrated from UCL 4.2)
+// This example shows the UCL 5.0 equivalent of a basic request
+// to a knowledge base service to find information about a specific book.
+// Key changes:
+// 1. 'execute' verb with a specific Operation_UCLID (e.g., myapp:action:QueryBookByDetails).
+// 2. Association of a Context Mixer Profile (e.g., ^cm:profile cm:profile:LiteraryBookQuery).
+// 3. Payload is a graph of triples describing the query criteria.
+// 4. Optional Context Stack is complementary.
+
+@prefix schema: <http://schema.org/>
+@prefix wd: <http://www.wikidata.org/entity/>
+@prefix ucl: <http://ucl-spec.org/5.0/core#>               // UCL 5.0 core namespace
+@prefix cm: <http://ucl-spec.org/5.0/context-mixer#>     // Context Mixer namespace
+@prefix ucl_meta: <http://ucl-spec.org/5.0/metadata#>   // Metadata namespace
+@prefix ucl_ctx: <http://ucl-spec.org/context#>          // Hypothetical context aspects namespace
+@prefix myapp: <http://example.com/myapp-ontology#>     // Custom application namespace
+
+// Conceptual Definition of the Context Mixer Profile (would typically be defined elsewhere or known by the LLM)
+// For this example, we assume cm:profile:LiteraryBookQuery is defined to handle literary queries.
+// A minimal profile might look like this:
+// cm:profile:LiteraryBookQuery a cm:Profile ;
+//     schema:name "Literary Book Query Profile" ;
+//     cm:definesFocus
+//         [ a cm:FocusElement ; cm:onAspect ucl_ctx:LiteraryWork ; cm:withWeight 1.0 ],
+//         [ a cm:FocusElement ; cm:onAspect ucl_ctx:InformationRequest ; cm:withWeight 0.9 ] ;
+//     cm:appliesStrategy cm:strategy:SimpleAdditive . // Or LLMManaged
+
+// The UCL 5.0 Message
+ucl:id:UserQueryAgent001 > ucl:service:KnowledgeBaseService execute myapp:action:QueryBookByDetails
+    ^cm:profile cm:profile:LiteraryBookQuery                               // Use a Context Mixer Profile
+    ^ucl_meta:taskDescription "Find book 'Nineteen Eighty-Four' by George Orwell"
+    ^llm:languageForResponse "en"                                          // Assuming response in English
+: // Payload Graph Separator
+{ // Start of PayloadGraph
+    (ucl:this) a myapp:BookQueryCriteria ; // The subject of our query criteria
+               schema:name "Nineteen Eighty-Four" ;
+               schema:author wd:Q3395 .         // wd:Q3395 is George Orwell
+}
+# ucl_project:DigitalLibrary / ucl_user_task:FactFinding // Optional broader context stack

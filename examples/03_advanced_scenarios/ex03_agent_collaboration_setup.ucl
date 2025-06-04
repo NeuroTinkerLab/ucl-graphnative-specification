@@ -1,0 +1,57 @@
+// UCL 5.0 Example: AI Agent Collaboration Setup and Task Delegation
+// This example demonstrates two conceptual UCL 5.0 messages:
+// 1. Message 1: An Orchestrator AI configures a Specialist AI with a specific role and profile.
+// 2. Message 2: The Orchestrator AI delegates a task to the configured Specialist AI.
+
+@prefix ucl: <http://ucl-spec.org/5.0/core#>
+@prefix cm: <http://ucl-spec.org/5.0/context-mixer#>
+@prefix llm: <http://ucl-spec.org/5.0/llm#>
+@prefix ucl_meta: <http://ucl-spec.org/5.0/metadata#>
+@prefix schema: <http://schema.org/>
+@prefix agent: <http://example.org/agent-ontology#>      // For agent roles, capabilities
+@prefix task: <http://example.org/task-ontology#>        // For task descriptions
+@prefix myapp: <http://example.com/myapp-ontology#>     // Custom application namespace
+@prefix ucl_data_src: <http://ucl-spec.org/datasource#> // Hypothetical for data sources
+
+// --- Conceptual Definition of a Context Mixer Profile for the Specialist AI ---
+// cm:profile:DataAnalysisSpecialistRole a cm:Profile ;
+//     schema:name "Data Analysis Specialist Role Profile" ;
+//     schema:description "Configures an AI to act as a data analysis specialist, focusing on statistical accuracy, pattern identification, and clear reporting of findings." ;
+//     cm:definesFocus
+//         [ a cm:FocusElement ; cm:onAspect agent:skill:StatisticalAnalysis ; cm:withWeight 1.0 ],
+//         [ a cm:FocusElement ; cm:onAspect agent:skill:PatternRecognition ; cm:withWeight 0.9 ],
+//         [ a cm:FocusElement ; cm:onAspect agent:trait:AttentionToDetail ; cm:withWeight 1.0 ],
+//         [ a cm:FocusElement ; cm:onAspect ucl_data_src:StructuredDataPreference ; cm:withWeight 0.8 ; cm:withFilter "Prefer CSV, JSON, or database inputs if available." ],
+//         [ a cm:FocusElement ; cm:onAspect agent:reportingStyle:FactualAndConcise ; cm:withWeight 0.9 ] ;
+//     cm:appliesStrategy cm:strategy:RoleAdherence ; // Hypothetical: AI strictly adheres to defined skills/traits
+//     cm:guidesOutput "Analysis results should be presented as a structured summary with key metrics and identified patterns. Include confidence levels for findings if applicable." .
+
+// --- Message 1: Orchestrator Configures Specialist AI ---
+agent:id:OrchestratorAI > agent:id:SpecialistAI_007 execute agent:action:ConfigureRoleAndProfile
+    ^ucl_meta:taskDescription "Set up SpecialistAI_007 for data analysis tasks."
+:
+{
+    (ucl:this) a agent:RoleConfiguration ;
+        agent:assignsRole agent:role:DataAnalysisSpecialist ;
+        agent:activatesProfile cm:profile:DataAnalysisSpecialistRole . // Tells specialist to use this profile
+}
+# ucl_context:AgentSystemSetup / ucl_project:TeamAlphaOperation
+
+// --- (Some time later, or in a separate communication channel) ---
+
+// --- Message 2: Orchestrator Delegates a Task to the Configured Specialist AI ---
+agent:id:OrchestratorAI > agent:id:SpecialistAI_007 execute task:action:AnalyzeDataset
+    // The SpecialistAI_007 is now expected to use cm:profile:DataAnalysisSpecialistRole
+    // as per its prior configuration (Message 1).
+    // Alternatively, the profile could be re-specified here if dynamic assignment is needed:
+    // ^cm:profile cm:profile:DataAnalysisSpecialistRole
+    ^ucl_meta:taskDescription "Analyze sales dataset for Q1 2024 to identify top 3 performing regions."
+    ^task:hasDeadline "2024-04-10T17:00:00Z"^^xsd:dateTime
+:
+{
+    (ucl:this) a task:AnalysisTaskInput ;
+        task:hasDataset <http://example.com/datasets/sales_q1_2024.csv> ; // URI to the dataset
+        task:specificObjective "Identify top 3 performing regions by total sales volume and provide supporting figures." ;
+        task:outputRequirement "Ranked list of regions with sales data." .
+}
+# ucl_context:DataAnalysisWorkflow / ucl_project:TeamAlphaOperation

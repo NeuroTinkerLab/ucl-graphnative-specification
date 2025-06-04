@@ -1,0 +1,66 @@
+// UCL 5.0 Example: Multi-Step Reasoning Request
+// This example instructs an LLM to perform a sequence of related tasks:
+// 1. Analyze a customer review for a product to extract sentiment and key issues.
+// 2. Based on the analysis, draft a polite and empathetic reply to the customer.
+// 3. Suggest an internal action for the support team.
+// A Context Mixer Profile will guide each phase or the overall approach.
+
+@prefix ucl: <http://ucl-spec.org/5.0/core#>
+@prefix cm: <http://ucl-spec.org/5.0/context-mixer#>
+@prefix llm: <http://ucl-spec.org/5.0/llm#>
+@prefix ucl_meta: <http://ucl-spec.org/5.0/metadata#>
+@prefix schema: <http://schema.org/>
+@prefix review: <http://example.org/review-ontology#>    // For review analysis
+@prefix cust_srv: <http://example.org/customer-service#> // For customer service actions
+@prefix ucl_comm: <http://ucl-spec.org/communication#>  // For communication styles
+@prefix ucl_emotion: <http://ucl-spec.org/emotion#>     // For sentiment/emotion
+@prefix myapp: <http://example.com/myapp-ontology#>     // Custom application namespace
+
+// --- Conceptual Definition of the Context Mixer Profile ---
+// cm:profile:CustomerReviewResponseWorkflow a cm:Profile ;
+//     schema:name "Customer Review Analysis and Response Workflow Profile" ;
+//     schema:description "Guides a multi-step process: analyze review, draft reply, suggest internal action." ;
+//     cm:definesFocus // These focuses might apply globally or be selectively activated by the LLM per step
+//         [ a cm:FocusElement ; cm:onAspect review:SentimentExtraction ; cm:withWeight 1.0 ; cm:withFilter "Identify overall sentiment (Positive, Negative, Neutral) and key emotion words." ],
+//         [ a cm:FocusElement ; cm:onAspect review:IssueIdentification ; cm:withWeight 1.0 ; cm:withFilter "Extract specific problems or praises mentioned regarding product/service." ],
+//         [ a cm:FocusElement ; cm:onAspect ucl_comm:EmpatheticReplyStyle ; cm:withWeight 0.9 ; cm:withFilter "For customer reply: Acknowledge feelings, be understanding, offer solutions if applicable." ],
+//         [ a cm:FocusElement ; cm:onAspect ucl_comm:ProfessionalTone_Internal ; cm:withWeight 0.8 ; cm:withFilter "For internal suggestion: Be concise, factual, and actionable." ],
+//         [ a cm:FocusElement ; cm:onAspect cust_srv:ActionableInternalSuggestion ; cm:withWeight 1.0 ; cm:withFilter "Internal suggestion should be a concrete step (e.g., 'Investigate batch X', 'Update FAQ', 'Offer refund/discount')." ] ;
+//     cm:appliesStrategy cm:strategy:SequentialTaskGuidance ; // Hypothetical: LLM understands this implies a sequence
+//     cm:guidesOutput """
+//     Provide a structured output containing three distinct sections:
+//     1.  **Review Analysis:**
+//         *   Overall Sentiment: [Positive/Negative/Neutral]
+//         *   Key Issues/Praises: [Bullet list]
+//         *   Detected Emotions: [Comma-separated list]
+//     2.  **Draft Customer Reply:**
+//         *   [Full text of the suggested reply]
+//     3.  **Suggested Internal Action:**
+//         *   [Concise description of the suggested action for the team]
+//     Format output in Markdown.
+//     """ .
+
+// --- The UCL 5.0 Message ---
+ucl:id:SupportSupervisor > llm:agent:MultiTaskAI_Assistant execute myapp:action:ProcessCustomerReviewWorkflow
+    ^cm:profile cm:profile:CustomerReviewResponseWorkflow
+    ^ucl_meta:taskDescription "Analyze customer review, draft reply, and suggest internal action."
+    ^llm:requestReasoningTrace true
+: // Payload Graph Separator
+{ // Start of PayloadGraph
+    (ucl:this) a myapp:ReviewProcessingRequest ;
+        review:hasCustomerReview [
+            a schema:Review ;
+            schema:author [ a schema:Person ; schema:name "Pat dissatisfied" ] ;
+            schema:itemReviewed [ a schema:Product ; schema:name "SuperWidget X100" ] ;
+            schema:reviewBody """
+            I'm quite disappointed with the SuperWidget X100 I bought last week.
+            The battery life is terrible, lasting only about 2 hours, not the 8 hours advertised.
+            Also, the main button feels very flimsy and sometimes gets stuck.
+            I expected much better quality for this price. I need a solution!
+            My order number was SWX100-00123.
+            """ ;
+            schema:datePublished "2024-03-18"^^xsd:date
+        ] ;
+        cust_srv:customerEmail "pat.d@example.com" . // For the reply context
+}
+# ucl_context:CustomerFeedback / ucl_process:ServiceRecovery

@@ -1,0 +1,81 @@
+// UCL 5.0 Example: Decision Support with Weighted Criteria via Context Mixer
+// This example instructs an LLM to evaluate three project proposals based on a set of
+// criteria (e.g., ROI, Strategic Alignment, Risk, Innovation).
+// The Context Mixer Profile defines the weight/importance of each criterion.
+
+@prefix ucl: <http://ucl-spec.org/5.0/core#>
+@prefix cm: <http://ucl-spec.org/5.0/context-mixer#>
+@prefix llm: <http://ucl-spec.org/5.0/llm#>
+@prefix ucl_meta: <http://ucl-spec.org/5.0/metadata#>
+@prefix schema: <http://schema.org/>
+@prefix decision: <http://example.org/decision-ontology#> // For decision support concepts
+@prefix project: <http://example.org/project-ontology#>  // For project concepts
+@prefix criterion: <http://example.org/criteria#>       // For evaluation criteria
+@prefix myapp: <http://example.com/myapp-ontology#>     // Custom application namespace
+
+// --- Conceptual Definition of the Context Mixer Profile ---
+// cm:profile:ProjectProposalEvaluationHighInnovation a cm:Profile ;
+//     schema:name "Project Proposal Evaluation - High Innovation Focus" ;
+//     schema:description "Evaluates project proposals, giving significant weight to innovation potential and strategic alignment, with moderate risk tolerance." ;
+//     cm:definesFocus
+//         [ a cm:FocusElement ; cm:onAspect criterion:ReturnOnInvestment ; cm:withWeight 0.7 ; cm:withFilter "Consider projected ROI over 3-5 years." ],
+//         [ a cm:FocusElement ; cm:onAspect criterion:StrategicAlignment ; cm:withWeight 0.9 ; cm:withFilter "Assess alignment with company's Q3 strategic goals: 'Market Expansion' and 'Sustainability Leadership'." ],
+//         [ a cm:FocusElement ; cm:onAspect criterion:InnovationPotential ; cm:withWeight 1.0 ; cm:withFilter "Prioritize projects with disruptive potential or novel technology application." ],
+//         [ a cm:FocusElement ; cm:onAspect criterion:RiskLevel_Technical ; cm:withWeight 0.4 ; cm:withFilter "Accept moderate technical risk if innovation is high." ], // Lower weight means higher tolerance for this negative factor
+//         [ a cm:FocusElement ; cm:onAspect criterion:RiskLevel_Market ; cm:withWeight 0.5 ],
+//         [ a cm:FocusElement ; cm:onAspect criterion:ResourceAvailability_Internal ; cm:withWeight 0.6 ; cm:withFilter "Consider availability of key personnel and budget." ] ;
+//     cm:appliesStrategy cm:strategy:WeightedScoringAndRanking ; // Hypothetical strategy that scores each proposal based on weighted criteria and then ranks them
+//     cm:guidesOutput """
+//     Provide an evaluation summary for each project proposal, including:
+//     1. A brief summary of how it scores against each weighted criterion.
+//     2. An overall recommendation score (e.g., 1-10) or category (e.g., 'Highly Recommended', 'Consider', 'Reject').
+//     3. A final ranking of the proposals from most to least recommended.
+//     Output in a clear, structured format, perhaps Markdown with tables for scores.
+//     """ .
+
+// --- The UCL 5.0 Message ---
+ucl:id:StrategyCommittee > llm:agent:DecisionSupportAI execute myapp:action:EvaluateProjectProposals
+    ^cm:profile cm:profile:ProjectProposalEvaluationHighInnovation
+    ^ucl_meta:taskDescription "Evaluate and rank three project proposals based on weighted criteria with a focus on innovation."
+    ^llm:requestReasoningTrace true
+    ^llm:reasoningTraceDetail ucl_meta:value:SummaryTrace
+: // Payload Graph Separator
+{ // Start of PayloadGraph
+    (ucl:this) a myapp:ProjectEvaluationRequest ;
+        decision:hasCandidate ( // RDF List of project proposals to evaluate
+            project:ProposalAlpha
+            project:ProposalBeta
+            project:ProposalGamma
+        ) .
+
+    project:ProposalAlpha a project:ProjectProposal ;
+        schema:name "Project Alpha: AI-Powered Customer Service Chatbot" ;
+        schema:description "Develop an advanced AI chatbot to handle 80% of Tier 1 customer inquiries, improving response time and agent efficiency." ;
+        project:estimatedROI "150% over 3 years" ;
+        project:alignsWithGoal "CustomerExperienceEnhancement" ; // Assume this maps to a strategic goal
+        project:innovationAspect "Uses novel sentiment-adaptive dialogue management." ;
+        project:technicalRisk project:riskValue:Medium ;
+        project:marketRisk project:riskValue:Low ;
+        project:requiresResource "AI/ML Specialists", "Cloud Infrastructure Budget" .
+
+    project:ProposalBeta a project:ProjectProposal ;
+        schema:name "Project Beta: Blockchain for Supply Chain Transparency" ;
+        schema:description "Implement a blockchain solution to provide full traceability and transparency in our global supply chain." ;
+        project:estimatedROI "80% over 5 years" ;
+        project:alignsWithGoal "SustainabilityLeadership", "OperationalEfficiency" ;
+        project:innovationAspect "Pioneering use of private blockchain for our specific industry vertical." ;
+        project:technicalRisk project:riskValue:High ;
+        project:marketRisk project:riskValue:MediumHigh ;
+        project:requiresResource "Blockchain Developers", "Partner Integration Effort" .
+
+    project:ProposalGamma a project:ProjectProposal ;
+        schema:name "Project Gamma: Internal Process Optimization using RPA" ;
+        schema:description "Automate 5 key internal back-office processes using Robotic Process Automation to reduce manual effort." ;
+        project:estimatedROI "120% over 2 years" ;
+        project:alignsWithGoal "OperationalEfficiency" ;
+        project:innovationAspect "Standard application of existing RPA technology." ;
+        project:technicalRisk project:riskValue:Low ;
+        project:marketRisk project:riskValue:VeryLow ;
+        project:requiresResource "RPA Analysts", "Software Licenses" .
+}
+# ucl_context:StrategicPlanning / ucl_cycle:AnnualReview2024

@@ -1,0 +1,105 @@
+// UCL 5.0 Example: Complex Data Integration and Synthesis for Report Generation
+// This example instructs an LLM to synthesize information from multiple "data sources"
+// (represented as distinct graph segments in the payload) to answer a complex question
+// or generate a consolidated report section.
+// The Context Mixer Profile guides how to prioritize or combine these sources.
+
+@prefix ucl: <http://ucl-spec.org/5.0/core#>
+@prefix cm: <http://ucl-spec.org/5.0/context-mixer#>
+@prefix llm: <http://ucl-spec.org/5.0/llm#>
+@prefix ucl_meta: <http://ucl-spec.org/5.0/metadata#>
+@prefix schema: <http://schema.org/>
+@prefix report: <http://example.org/report-ontology#>    // For report concepts
+@prefix data: <http://example.org/data-sources#>        // For data source types/ids
+@prefix research: <http://example.org/research#>        // For research paper concepts
+@prefix news: <http://example.org/news#>                // For news article concepts
+@prefix myapp: <http://example.com/myapp-ontology#>     // Custom application namespace
+
+// --- Conceptual Definition of the Context Mixer Profile ---
+// cm:profile:ScientificBriefingFromMultipleSources a cm:Profile ;
+//     schema:name "Scientific Briefing Synthesis Profile" ;
+//     schema:description "Guides synthesis of information from research papers and news articles, prioritizing peer-reviewed findings but incorporating recent developments from credible news." ;
+//     cm:definesFocus
+//         [
+//             a cm:FocusElement ;
+//             cm:onAspect data:sourceType:PeerReviewedResearch ;
+//             cm:withWeight 1.0 ; // Highest credibility
+//             cm:withFilter "Extract key findings, methodology summary, and stated limitations."
+//         ],
+//         [
+//             a cm:FocusElement ;
+//             cm:onAspect data:sourceType:ReputableNewsOutlet ;
+//             cm:withWeight 0.7 ;
+//             cm:withFilter "Extract main claims and reported impact. Cross-reference with research if possible. Note potential biases."
+//         ],
+//         [
+//             a cm:FocusElement ;
+//             cm:onAspect data:sourceType:PreprintArchive ; // e.g., arXiv
+//             cm:withWeight 0.5 ;
+//             cm:withFilter "Note as preliminary findings. Highlight novelty."
+//         ],
+//         [
+//             a cm:FocusElement ;
+//             cm:onAspect report:synthesisGoal:IdentifyConsensusAndDivergence ;
+//             cm:withWeight 0.9 ;
+//             cm:withFilter "Synthesize by identifying points of agreement and disagreement across sources regarding the main topic."
+//         ] ;
+//     cm:appliesStrategy cm:strategy:SourceWeightedEvidenceIntegration ; // Hypothetical: integrates evidence, weighing by source credibility/focus weight
+//     cm:guidesOutput """
+//     Produce a synthesized briefing on the topic (approx. 500 words) that includes:
+//     1.  Introduction to the topic.
+//     2.  Summary of key findings from peer-reviewed research.
+//     3.  Recent developments or public discourse reported in news (noting source type).
+//     4.  Areas of consensus, divergence, or open questions.
+//     5.  Conclusion.
+//     Cite sources implicitly by referring to 'the Nature paper' or 'a recent BBC report'.
+//     Output in Markdown format.
+//     """ .
+
+// --- The UCL 5.0 Message ---
+ucl:id:ResearchAnalyst > llm:agent:SynthesisAI execute myapp:action:GenerateSynthesizedBriefing
+    ^cm:profile cm:profile:ScientificBriefingFromMultipleSources
+    ^ucl_meta:taskDescription "Synthesize information on 'CRISPR Gene Editing for Neurological Disorders' from provided research and news excerpts."
+: // Payload Graph Separator
+{ // Start of PayloadGraph
+    (ucl:this) a myapp:BriefingRequest ;
+        report:hasTopic "CRISPR Gene Editing for Neurological Disorders" ;
+        report:includesDataSource data:Paper_Nature2023, data:Article_BBC2024, data:Preprint_BioRxiv2024 .
+
+    data:Paper_Nature2023 a research:ResearchPaper, data:sourceType:PeerReviewedResearch ;
+        schema:name "CRISPR-Cas9 mediated correction of Huntington's model in primates" ;
+        schema:author "Lee, et al." ;
+        schema:datePublished "2023-05-15"^^xsd:date ;
+        schema:publication <http://example.com/journals/nature> ; // URI for the journal
+        research:abstract """
+        This study demonstrates successful in-vivo application of CRISPR-Cas9 to ameliorate
+        symptoms in a primate model of Huntington's disease. Significant motor function
+        improvement was observed. Potential off-target effects require further investigation.
+        """ ;
+        research:keyFinding "Successful symptom reduction in primate model.", "Off-target effects need more study." .
+
+    data:Article_BBC2024 a news:NewsArticle, data:sourceType:ReputableNewsOutlet ;
+        schema:name "Gene Editing Breakthrough Offers Hope for Brain Disorders" ;
+        schema:author "Dr. Smith (Science Correspondent)" ;
+        schema:datePublished "2024-02-20"^^xsd:date ;
+        schema:publisher <http://example.com/news/bbc> ; // URI for BBC News
+        news:summary """
+        A landmark study published in Nature shows promise for CRISPR gene editing in treating
+        neurological conditions like Huntington's. While experts are cautiously optimistic,
+        emphasizing that human trials are still some way off, the results are a significant step.
+        Ethical debates surrounding germline editing continue.
+        """ ;
+        news:reportedImpact "Increased hope for treatments; ongoing ethical discussions." .
+
+    data:Preprint_BioRxiv2024 a research:Preprint, data:sourceType:PreprintArchive ;
+        schema:name "Novel CRISPR delivery vector shows enhanced CNS penetration" ;
+        schema:author "Chen, et al." ;
+        schema:datePublished "2024-01-10"^^xsd:date ;
+        research:abstract """
+        We report a new AAV-based vector for CRISPR components with significantly improved
+        blood-brain barrier penetration in mice. This could enhance therapeutic efficacy
+        for CNS disorders. Further validation is pending peer review.
+        """ ;
+        research:keyFinding "New delivery vector with better CNS penetration (mice model).", "Preliminary, awaiting peer review." .
+}
+# ucl_context:ScientificReporting / ucl_domain:Biotechnology

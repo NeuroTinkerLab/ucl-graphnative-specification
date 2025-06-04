@@ -1,0 +1,86 @@
+// UCL 5.0 Example: Code Generation with Stylistic and Functional Guidance
+// This example instructs an LLM to generate a Python function based on a description,
+// using a Context Mixer Profile to enforce coding standards, style, and specific requirements.
+
+@prefix ucl: <http://ucl-spec.org/5.0/core#>
+@prefix cm: <http://ucl-spec.org/5.0/context-mixer#>
+@prefix llm: <http://ucl-spec.org/5.0/llm#>
+@prefix ucl_meta: <http://ucl-spec.org/5.0/metadata#>
+@prefix schema: <http://schema.org/>
+@prefix code: <http://example.org/code-ontology#>        // For code-related concepts
+@prefix ucl_code_style: <http://ucl-spec.org/code-style#> // Hypothetical for coding styles
+@prefix ucl_req: <http://ucl-spec.org/requirements#>    // Hypothetical for requirements
+@prefix myapp: <http://example.com/myapp-ontology#>   // Custom application namespace
+
+// --- Conceptual Definition of the Context Mixer Profile ---
+// cm:profile:PythonFunctionPEP8Docs a cm:Profile ;
+//     schema:name "Python Function Generation - PEP8 & Docstrings" ;
+//     schema:description "Guides LLM to generate Python functions adhering to PEP8, including type hints and comprehensive docstrings (Google style)." ;
+//     cm:definesFocus
+//         [
+//             a cm:FocusElement ;
+//             cm:onAspect code:language:Python3 ; // Target language
+//             cm:withWeight 1.0 ; // Absolute requirement
+//             cm:withFilter "Ensure Python 3.8+ compatibility."
+//         ],
+//         [
+//             a cm:FocusElement ;
+//             cm:onAspect ucl_code_style:PEP8 ; // Coding standard
+//             cm:withWeight 1.0 ;
+//             cm:withFilter "Strict adherence to PEP8 for formatting, naming conventions (snake_case for functions/variables, CamelCase for classes)."
+//         ],
+//         [
+//             a cm:FocusElement ;
+//             cm:onAspect code:feature:TypeHinting ; // Python type hints
+//             cm:withWeight 0.9 ;
+//             cm:withFilter "All function parameters and return types must have type hints (from 'typing' module if necessary)."
+//         ],
+//         [
+//             a cm:FocusElement ;
+//             cm:onAspect code:feature:DocstringsGoogleStyle ; // Specific docstring format
+//             cm:withWeight 1.0 ;
+//             cm:withFilter "Include: brief summary, Args section (with types), Returns section (with type), and Raises section if applicable."
+//         ],
+//         [
+//             a cm:FocusElement ;
+//             cm:onAspect ucl_req:EfficiencyConsideration ; // Non-functional requirement
+//             cm:withWeight 0.6 ;
+//             cm:withFilter "If multiple algorithmic approaches exist, lean towards solutions with better time/space complexity unless specified otherwise."
+//         ] ;
+//     cm:appliesStrategy cm:strategy:StrictCompliance ; // Hypothetical: all focuses are hard constraints or strong guides
+//     cm:guidesOutput """
+//     Output only the generated Python function code as a single block.
+//     Do not include any explanatory text before or after the code block.
+//     The function should be complete and runnable given appropriate inputs.
+//     """ .
+
+// --- The UCL 5.0 Message ---
+ucl:id:DevTeamLead > llm:agent:CodeGenerationAI execute myapp:action:GeneratePythonFunction
+    ^cm:profile cm:profile:PythonFunctionPEP8Docs
+    ^ucl_meta:taskDescription "Generate a Python function to calculate the factorial of a non-negative integer using recursion."
+    ^llm:temperature 0.2 // Lower temperature for more deterministic code generation
+: // Payload Graph Separator
+{ // Start of PayloadGraph
+    (ucl:this) a myapp:CodeGenerationRequest ;
+        code:functionName "calculate_factorial_recursive" ;
+        code:functionDescription """
+        Calculates the factorial of a given non-negative integer n.
+        The factorial of n (denoted as n!) is the product of all positive integers less than or equal to n.
+        Factorial of 0 is 1. This function should use a recursive approach.
+        It should handle invalid input (negative numbers) by raising a ValueError.
+        """ ;
+        code:hasParameter [
+            a code:FunctionParameter ;
+            code:parameterName "n" ;
+            code:parameterDescription "A non-negative integer." ;
+            code:expectedType "int" // Could also be xsd:integer or a Python-specific type URI
+        ] ;
+        code:hasReturnType [
+            a code:FunctionReturn ;
+            code:returnDescription "The factorial of n." ;
+            code:expectedType "int"
+        ] ;
+        code:raisesException code:exception:ValueError ; // Documents expected exception
+        myapp:additionalConstraint "The recursion depth should be reasonably managed, though typical system limits apply." .
+}
+# ucl_project:MathLibrary / ucl_module:CoreUtils

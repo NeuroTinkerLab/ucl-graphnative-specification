@@ -1,0 +1,60 @@
+// UCL 5.0 Example: Data Extraction from Text
+// This example instructs an LLM to extract specific pieces of information
+// (name, email, order number) from a given block of text.
+// A Context Mixer Profile guides what entities to look for.
+
+@prefix ucl: <http://ucl-spec.org/5.0/core#>
+@prefix cm: <http://ucl-spec.org/5.0/context-mixer#>
+@prefix llm: <http://ucl-spec.org/5.0/llm#>
+@prefix ucl_meta: <http://ucl-spec.org/5.0/metadata#>
+@prefix schema: <http://schema.org/>
+@prefix ucl_entity: <http://ucl-spec.org/entity#>     // Hypothetical namespace for entity types to extract
+@prefix myapp: <http://example.com/myapp-ontology#> // Custom application namespace
+
+// Conceptual Definition of the Context Mixer Profile (illustrative)
+// cm:profile:CustomerInfoExtraction a cm:Profile ;
+//     schema:name "Customer Information Extraction Profile" ;
+//     schema:description "Profile to guide extraction of customer name, email, and order number from text." ;
+//     cm:definesFocus
+//         [ a cm:FocusElement ; cm:onAspect ucl_entity:FullName ; cm:withWeight 1.0 ; cm:withFilter "Look for patterns like 'First Last' or 'Mr./Ms. Last'." ],
+//         [ a cm:FocusElement ; cm:onAspect ucl_entity:EmailAddress ; cm:withWeight 1.0 ; cm:withFilter "Identify standard email formats (e.g., user@domain.com)." ],
+//         [ a cm:FocusElement ; cm:onAspect ucl_entity:OrderNumber ; cm:withWeight 1.0 ; cm:withFilter "Order numbers typically look like 'ORD-XXXXXX' or a 8-10 digit number." ] ;
+//     cm:appliesStrategy cm:strategy:LLMManaged ; // LLM uses these focuses to find entities
+//     cm:guidesOutput """
+//     Output the extracted information as a UCL 5.0 graph.
+//     The main subject should be a blank node of type myapp:ExtractedData.
+//     Use schema:name for the full name, schema:email for the email,
+//     and myapp:orderID for the order number. If a piece of information is not found,
+//     use ucl:Null for its value or omit the triple.
+//     Example:
+//     {
+//        [] a myapp:ExtractedData ;
+//           schema:name "John Doe" ;
+//           schema:email "john.doe@example.com" ;
+//           myapp:orderID "ORD-12345" .
+//     }
+//     """ .
+
+// The UCL 5.0 Message
+ucl:id:SupportSystem > llm:agent:InfoExtractorAI execute myapp:action:ExtractEntitiesFromText
+    ^cm:profile cm:profile:CustomerInfoExtraction
+    ^llm:languageForResponse "en"
+    ^ucl_meta:taskDescription "Extract customer name, email, and order number from the provided text."
+: // Payload Graph Separator
+{ // Start of PayloadGraph
+    (ucl:this) a myapp:TextExtractionRequest ;
+        myapp:hasSourceText """
+        Hello,
+
+        My name is Jane Doe and I'm writing about my recent order, ORD-98765.
+        I haven't received a shipping confirmation yet. My email is jane.d@example.co.uk.
+        Can you please check the status?
+
+        Thanks,
+        Jane
+        """ ;
+        // Optionally, specify the entities to extract here if not solely relying on the profile,
+        // though the profile is the preferred place for this guidance.
+        myapp:requestsExtractionOf ucl_entity:FullName, ucl_entity:EmailAddress, ucl_entity:OrderNumber .
+}
+# ucl_task:DataProcessing / ucl_source:CustomerEmail

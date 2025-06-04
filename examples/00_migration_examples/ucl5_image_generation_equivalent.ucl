@@ -1,0 +1,53 @@
+// UCL 5.0 Example: Image Generation Request (Migrated from UCL 4.2)
+// This example demonstrates the UCL 5.0 equivalent for commanding an AI image generation service.
+// Key changes:
+// 1. Specific Operation_UCLID: e.g., art:action:GenerateImageFromDescription.
+// 2. Context Mixer Profile: ^cm:profile to guide artistic style, mood, etc.
+// 3. Graph Payload: Scene description, elements, and parameters are represented as triples.
+//    - The UCL 4.2 example's "art:element:Astronaut(pose="contemplative")" needs careful conversion
+//      to a graph structure, typically by making 'pose' a property of the Astronaut entity.
+
+@prefix schema: <http://schema.org/>
+@prefix ucl: <http://ucl-spec.org/5.0/core#>
+@prefix cm: <http://ucl-spec.org/5.0/context-mixer#>
+@prefix ucl_meta: <http://ucl-spec.org/5.0/metadata#>
+@prefix art: <http://example.org/art-ontology#>          // Custom art ontology (reused)
+@prefix ucl_art_ctx: <http://ucl-spec.org/art-context#> // Hypothetical context for art
+
+// Conceptual Definition of cm:profile:SciFiImpressionistArt (illustrative)
+// cm:profile:SciFiImpressionistArt a cm:Profile ;
+//     schema:name "Sci-Fi Impressionistic Art Generation Profile" ;
+//     cm:definesFocus
+//         [ a cm:FocusElement ; cm:onAspect art:style:ImpressionisticSciFi ; cm:withWeight 1.0 ],
+//         [ a cm:FocusElement ; cm:onAspect art:mood:MysteriousAndAweInspiring ; cm:withWeight 0.9 ],
+//         [ a cm:FocusElement ; cm:onAspect art:lighting:EtherealGlow ; cm:withWeight 0.8 ],
+//         [ a cm:FocusElement ; cm:onAspect ucl_art_ctx:CreativeWork ; cm:withWeight 0.7 ],
+//         [ a cm:FocusElement ; cm:onAspect ucl_art_ctx:ScienceFictionArt ; cm:withWeight 1.0 ] ;
+//     cm:appliesStrategy cm:strategy:LLMManaged ; // Let LLM blend these stylistic elements
+//     cm:guidesOutput "Output image should be high resolution, suitable for digital display." .
+
+// The UCL 5.0 Message
+ucl:id:ArtDirectorAI > art:service:AIImageGenerator execute art:action:GenerateImageFromDescription
+    ^cm:profile cm:profile:SciFiImpressionistArt
+    ^ucl_meta:taskDescription "Generate image: Astronaut, alien artifact, moon."
+    ^art:param:outputType art:type:DigitalPainting // Modifier for output type
+    ^art:param:aspectRatio "16:9"                  // Modifier for aspect ratio
+: // Payload Graph Separator
+{ // Start of PayloadGraph
+    (ucl:this) a art:ImageGenerationRequest ; // Subject for the request parameters
+        art:hasSceneDescription [
+            a art:SceneDescription ;
+            art:subject "A lone astronaut discovering a glowing alien artifact on a desolate moon." ;
+            // Mood, lighting, etc., are now primarily handled by the Context Mixer Profile.
+            // If specific elements must be in payload, they are listed here:
+            art:hasKeyElement
+                [ a art:AstronautElement ; art:pose "contemplative" ], // 'pose' is now a property
+                [ a art:ArtifactElement ; art:design "crystalline_and_pulsating" ; art:visualEffect art:effect:Glowing ],
+                [
+                    a art:EnvironmentElement ;
+                    art:environmentType art:type:DesolateMoonscape ;
+                    art:keyFeature "craters", "distant_earth_in_sky" // Multi-valued property
+                ]
+        ] .
+}
+# ucl_project:GameAssetCreation / ucl_art_theme:Exploration // Optional broader context stack

@@ -1,0 +1,87 @@
+// UCL 5.0 Example: Detailed Market Analysis for "AquaPure Home Filter"
+// This example demonstrates a complex request using a Context Mixer Profile
+// to guide an LLM in generating a market analysis. It showcases how different
+// contextual aspects (product details, market trends, target audience) are
+// managed and weighted by the profile.
+
+@prefix ucl: <http://ucl-spec.org/5.0/core#>
+@prefix schema: <http://schema.org/>
+@prefix ucl_meta: <http://ucl-spec.org/5.0/metadata#>
+@prefix cm: <http://ucl-spec.org/5.0/context-mixer#>
+@prefix llm: <http://ucl-spec.org/5.0/llm#>
+@prefix myapp: <http://example.com/myapp-ontology#>     // For custom actions, types
+@prefix product: <http://example.com/products#>           // For product instances
+@prefix market: <http://example.org/market-ontology#>    // For market-related concepts
+@prefix ucl_audience: <http://ucl-spec.org/audience#>   // Hypothetical audience concepts
+@prefix ucl_trend: <http://ucl-spec.org/trend#>         // Hypothetical trend concepts
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+// --- Conceptual Definition of the Context Mixer Profile ---
+// This profile, cm:profile:AquaPureMarketAnalysis, would be defined in a knowledge base
+// or a separate UCL message. For illustration:
+//
+// cm:profile:AquaPureMarketAnalysis a cm:Profile ;
+//     schema:name "AquaPure Home Filter Market Analysis Profile" ;
+//     schema:description "Guides generation of a market analysis for AquaPure, focusing on sustainability, young eco-conscious families, and key market dynamics." ;
+//     cm:definesFocus
+//         [
+//             a cm:FocusElement ;
+//             cm:onAspect ucl_trend:SustainabilityInHomeAppliances ;
+//             cm:withWeight 0.9 ;
+//             cm:withFilter "Consider consumer demand for eco-certifications, recyclable materials, and low energy consumption."
+//         ],
+//         [
+//             a cm:FocusElement ;
+//             cm:onAspect ucl_audience:YoungEcoConsciousFamilies ; // (e.g., demographics: 25-40, urban, digitally savvy, values-driven)
+//             cm:withWeight 1.0 ; // Primary target audience
+//             cm:withFilter "Analyze purchasing motivations, preferred marketing channels, and price sensitivity relative to eco-features."
+//         ],
+//         [
+//             a cm:FocusElement ;
+//             cm:onAspect market:sectorDynamics:HomeWaterPurification ;
+//             cm:withWeight 0.7 ;
+//             cm:withFilter "Identify key competitors, market size/growth projections (if available), and emerging technologies."
+//         ],
+//         [
+//             a cm:FocusElement ;
+//             cm:onAspect product:AquaPureHomeFilter_Features ; // A UCL-ID representing the specific features of THIS product
+//             cm:withWeight 0.8 ;
+//             cm:withFilter "Evaluate how current product features align with identified trends and target audience needs."
+//         ] ;
+//     cm:appliesStrategy cm:strategy:LLMManagedHolisticAnalysis ; // LLM synthesizes these weighted aspects
+//     cm:guidesOutput """
+//     Produce a concise market analysis summary (approx. 400-500 words) covering:
+//     1. Market Overview & Key Sustainability Trends.
+//     2. Target Audience Profile & Attractiveness for AquaPure.
+//     3. Competitive Landscape Snapshot.
+//     4. Key Opportunities & Potential Challenges for AquaPure.
+//     Output in well-structured paragraphs with clear headings.
+//     """ .
+
+// --- The UCL 5.0 Message ---
+ucl:id:MarketingTeamLead > llm:agent:MarketAnalysisAI execute myapp:action:GenerateMarketAnalysisReport
+    ^cm:profile cm:profile:AquaPureMarketAnalysis
+    ^llm:languageForResponse "it"
+    ^ucl_meta:taskDescription "Generare una breve analisi di mercato per 'AquaPure Home Filter' considerando trend di sostenibilità e target famiglie giovani eco-consapevoli."
+    ^ucl_meta:outputFormat ucl_meta:value:StructuredTextReport
+    ^llm:requestReasoningTrace true
+    ^llm:reasoningTraceDetail ucl_meta:value:SummaryTrace
+: // Payload Graph Separator
+{ // Start of PayloadGraph
+    // Define the product in focus
+    product:AquaPureHomeFilter a schema:Product, market:FocusProduct ; // Can have multiple types
+        schema:name "AquaPure Home Filter" ;
+        schema:description "Un sistema di purificazione dell'acqua domestica fittizio, avanzato ed eco-compatibile." ;
+        product:hasKeyFeature "Filtrazione a 5 stadi con mineralizzazione", "Materiali riciclati al 75%", "Basso consumo energetico", "Connettività smart per monitoraggio filtro" ;
+        // This product:AquaPureHomeFilter_Features UCL-ID would link to these details if defined in a KB
+        // For this message, the features are directly provided.
+        product:targetMarketSegment ucl_audience:YoungEcoConsciousFamilies . // Explicit link to target audience
+
+    // Link the main product to this message's operational context
+    (ucl:this) a myapp:MarketAnalysisRequest ;
+        myapp:analyzesProduct product:AquaPureHomeFilter ;
+        // Explicitly state some high-level parameters that the cm:Profile will elaborate on
+        myapp:considersTrend ucl_trend:SustainabilityInHomeAppliances ;
+        myapp:targetsAudience ucl_audience:YoungEcoConsciousFamilies .
+}
+# ucl_project:ProductStrategy2025 / ucl_context:MarketResearch

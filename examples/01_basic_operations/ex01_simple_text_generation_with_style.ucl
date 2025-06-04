@@ -1,0 +1,56 @@
+// UCL 5.0 Example: Simple Text Generation with Stylistic Guidance via Context Mixer
+// This example requests an LLM to generate a short paragraph about a topic,
+// using a Context Mixer Profile to define the desired writing style.
+
+@prefix ucl: <http://ucl-spec.org/5.0/core#>
+@prefix cm: <http://ucl-spec.org/5.0/context-mixer#>
+@prefix llm: <http://ucl-spec.org/5.0/llm#>
+@prefix ucl_meta: <http://ucl-spec.org/5.0/metadata#>
+@prefix schema: <http://schema.org/>
+@prefix ucl_style: <http://ucl-spec.org/style#>       // Hypothetical namespace for styles
+@prefix ucl_topic: <http://ucl-spec.org/topic#>     // Hypothetical namespace for topics
+@prefix myapp: <http://example.com/myapp-ontology#> // Custom application namespace
+
+// Conceptual Definition of the Context Mixer Profile (illustrative)
+// This profile would ideally be predefined and known by the LLM, or loaded separately.
+//
+// cm:profile:InformativeConciseStyle a cm:Profile ;
+//     schema:name "Informative and Concise Writing Style" ;
+//     schema:description "A profile that guides text generation to be informative, clear, and concise, suitable for factual summaries." ;
+//     cm:definesFocus
+//         [
+//             a cm:FocusElement ;
+//             cm:onAspect ucl_style:Informative ;
+//             cm:withWeight 1.0
+//         ],
+//         [
+//             a cm:FocusElement ;
+//             cm:onAspect ucl_style:Concise ;
+//             cm:withWeight 0.9 ;
+//             cm:withFilter "Target paragraph length: 3-4 sentences. Avoid unnecessary jargon."
+//         ],
+//         [
+//             a cm:FocusElement ;
+//             cm:onAspect ucl_style:ObjectiveTone ;
+//             cm:withWeight 0.8
+//         ] ;
+//     cm:appliesStrategy cm:strategy:LLMManaged ; // Let LLM interpret and apply these stylistic focuses
+//     cm:guidesOutput "Output should be a single paragraph of text." .
+
+// The UCL 5.0 Message
+ucl:id:ContentCreatorApp > llm:agent:TextGeneratorAI execute myapp:action:GenerateParagraph
+    ^cm:profile cm:profile:InformativeConciseStyle       // Apply the defined style profile
+    ^llm:languageForResponse "en-UK"
+    ^ucl_meta:taskDescription "Generate a short, informative paragraph about the benefits of renewable energy."
+: // Payload Graph Separator
+{ // Start of PayloadGraph
+    (ucl:this) a myapp:TextGenerationRequest ; // Typing the request data
+        myapp:hasTopic ucl_topic:RenewableEnergyBenefits ;
+        myapp:desiredLength "Short paragraph (approx. 75 words)" . // Can also be in cm:guidesOutput
+
+    // Optionally, provide more details about the topic if needed:
+    ucl_topic:RenewableEnergyBenefits a ucl_topic:Concept ;
+        schema:name "Benefits of Renewable Energy" ;
+        schema:description "Focus on environmental impact, economic advantages, and energy independence." .
+}
+# ucl_project:EducationalContent / ucl_audience:GeneralPublic

@@ -1,0 +1,89 @@
+// UCL 5.0 Example: Message with a Complex, Nested Data Payload (Migrated from UCL 4.2)
+// This demonstrates how UCL 5.0's graph payload represents hierarchical data,
+// such as a customer order, using blank nodes for nested structures and RDF lists.
+// Key changes:
+// 1. Specific Operation_UCLID.
+// 2. JSON-like maps become sets of triples describing entities (Order, Customer, Address, OrderItems, Products).
+// 3. Nested maps become blank nodes or distinct URI-identified resources.
+// 4. JSON arrays become RDF lists or multi-valued properties.
+// 5. 'ucl:type' from UCL 4.2 payload maps to 'a' (rdf:type) in UCL 5.0.
+
+@prefix schema: <http://schema.org/>
+@prefix sales: <http://example.org/sales-ontology#>     // Reused
+@prefix ucl: <http://ucl-spec.org/5.0/core#>
+@prefix cm: <http://ucl-spec.org/5.0/context-mixer#>
+@prefix ucl_meta: <http://ucl-spec.org/5.0/metadata#>
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .      // For typed literals like dateTime
+@prefix order: <http://example.org/orders/>             // Namespace for specific order instances
+@prefix cust: <http://example.org/customers/>           // Namespace for specific customer instances
+@prefix prod: <http://example.org/products/>            // Namespace for specific product instances
+
+// The UCL 5.0 Message
+ucl:id:ECommercePlatform > sales:service:OrderProcessingSystem execute sales:action:SubmitCustomerOrder
+    ^ucl_meta:taskDescription "Submit new customer order ORD-2024-A458B"
+    // A cm:profile could be used here to specify order validation rules, fraud checks, etc.
+    // For direct migration focus, we'll keep it simple.
+    ^cm:profile cm:profile:StandardOrderProcessing // Example profile
+: // Payload Graph Separator
+{ // Start of PayloadGraph
+    // Define the main Order entity
+    order:ORD-2024-A458B a sales:CustomerOrder ; // Was sales:orderID as a key, now the subject URI
+        schema:identifier "ORD-2024-A458B" ;    // Explicit identifier property
+        schema:orderDate "2024-03-15T17:05:00Z"^^xsd:dateTime ;
+
+        schema:customer cust:CUST-007 ; // Link to the customer entity
+
+        sales:hasOrderItem // Points to an RDF list of order items
+            ( // Start of RDF List
+                [ // Blank node for the first OrderItem
+                    a schema:OrderItem ;
+                    schema:orderItemNumber "1" ;
+                    schema:orderQuantity 1 ;
+                    schema:orderedItem prod:PROD-A1B2 // Link to the product entity
+                ]
+                [ // Blank node for the second OrderItem
+                    a schema:OrderItem ;
+                    schema:orderItemNumber "2" ;
+                    schema:orderQuantity 1 ;
+                    schema:orderedItem prod:PROD-C3D4 // Link to the product entity
+                ]
+            ) ; // End of RDF List
+
+        sales:hasPaymentDetails [ // Blank node for payment details
+            a sales:PaymentInformation ;
+            sales:paymentMethod sales:method:CreditCard ;
+            sales:transactionID "TXN_abcdef123456"
+        ] .
+
+    // Define the Customer entity (linked from the order)
+    cust:CUST-007 a schema:Person ;
+        schema:identifier "CUST-007" ;
+        schema:givenName "Alice" ;
+        schema:familyName "Wonder" ;
+        schema:email "alice.w@example.com" ;
+        schema:address [ // Blank node for the address
+            a schema:PostalAddress ;
+            schema:streetAddress "123 Main St" ;
+            schema:addressLocality "Anytown" ;
+            schema:addressRegion "CA" ;
+            schema:postalCode "90210" ;
+            schema:addressCountry "US"
+        ] .
+
+    // Define Product entities (linked from order items)
+    prod:PROD-A1B2 a schema:Product ;
+        schema:productID "PROD-A1B2" ; // Or schema:identifier
+        schema:name "Wireless ergonomic mouse" ;
+        schema:price "25.99"^^xsd:decimal ; // Explicitly typed decimal for price
+        schema:priceCurrency "USD" .
+
+    prod:PROD-C3D4 a schema:Product ;
+        schema:productID "PROD-C3D4" ;
+        schema:name "Mechanical keyboard" ;
+        schema:price "79.50"^^xsd:decimal ;
+        schema:priceCurrency "USD" .
+
+    // Link the main order to this message context if needed
+    // (ucl:this) sales:concernsOrder order:ORD-2024-A458B .
+}
+# ucl:context:ECommerce / sales:context:OrderFulfillment / schema:context:SalesTransaction // Context stack remains similar
