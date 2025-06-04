@@ -40,12 +40,6 @@ ex:Book123 a schema:Book ;              // (ex:Book123 rdf:type schema:Book)
 
 ex:Author456 a schema:Person ;           // (ex:Author456 rdf:type schema:Person)
     schema:name "F. Scott Fitzgerald" .  // (ex:Author456 schema:name "F. Scott Fitzgerald")
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Turtle
-IGNORE_WHEN_COPYING_END
 
 (Note: (ucl:this) is often used as a conventional subject for parameters directly related to the message's operation if a specific entity like ex:Book123 isn't the central focus of the payload.)
 
@@ -93,12 +87,6 @@ Subject Repetition (Semicolon ;): If multiple triples share the same subject, yo
 
 (ucl:this) schema:name "Example" ;
            schema:description "An example payload." .
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Turtle
-IGNORE_WHEN_COPYING_END
 
 Object Repetition (Comma ,): If a subject-predicate pair has multiple objects, you can use a comma.
 
@@ -127,12 +115,7 @@ IGNORE_WHEN_COPYING_END
 Lists (()): RDF collections can be represented using parentheses.
 
 (ucl:this) ucl:hasOrderedItems ( item:A item:B item:C ) .
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Turtle
-IGNORE_WHEN_COPYING_END
+
 
 Literals: Strings are in double quotes ("..."), numbers and booleans are unquoted (e.g., 42, true). Typed literals can use ^^<datatypeURI>.
 
