@@ -1,3 +1,4 @@
+``markdown
 # Context Mixer Deep Dive: Defining and Using Profiles (`cm:Profile`)
 
 The heart of UCL 5.0's advanced context management lies in the **Context Mixer Profile (`cm:Profile`)**. A profile is a reusable, named configuration that dictates how various contextual influences should be interpreted, weighted, filtered, and combined to guide the processing of a UCL message by an AI or other system.
@@ -35,26 +36,25 @@ ucl:id:UserX > llm:agent:AdvancedAnalyst execute myapp:action:GenerateStrategicP
              myapp:forRegion schema:Asia .
 }
 # ucl_project:ExpansionQ4 // Optional broader context stack
-
+```
 
 In this example:
 
-^cm:profile cm:profile:GlobalMarketExpansionStrategy tells the llm:agent:AdvancedAnalyst to use the predefined cm:profile:GlobalMarketExpansionStrategy when executing myapp:action:GenerateStrategicPlan.
+`^cm:profile cm:profile:GlobalMarketExpansionStrategy` tells the `llm:agent:AdvancedAnalyst` to use the predefined `cm:profile:GlobalMarketExpansionStrategy` when executing `myapp:action:GenerateStrategicPlan`.
 
 The LLM would then (conceptually) look up or interpret the definition of this profile to guide its analysis and plan generation.
 
-Defining a cm:Profile
+## Defining a `cm:Profile`
 
-The definition of a cm:Profile itself is expressed using UCL 5.0's graph-native principles, typically using triples. This definition might be:
+The definition of a `cm:Profile` itself is expressed using UCL 5.0's graph-native principles, typically using triples. This definition might be:
 
-Pre-existing in a Knowledge Base: The Target_UCLID (e.g., the LLM) might have access to a library of predefined profiles.
+*   **Pre-existing in a Knowledge Base:** The `Target_UCLID` (e.g., the LLM) might have access to a library of predefined profiles.
+*   **Transmitted in a Prior Setup Message:** A system could be configured with profiles before processing operational messages.
+*   **Partially or Fully Defined within the Current Message:** For highly dynamic or one-off contextual needs, parts of a profile could be defined within the `PayloadGraph` of the current message, though this is a more advanced use case.
 
-Transmitted in a Prior Setup Message: A system could be configured with profiles before processing operational messages.
+## Conceptual Example of a `cm:Profile` Definition (using Turtle-like syntax):
 
-Partially or Fully Defined within the Current Message: For highly dynamic or one-off contextual needs, parts of a profile could be defined within the PayloadGraph of the current message, though this is a more advanced use case.
-
-Conceptual Example of a cm:Profile Definition (using Turtle-like syntax):
-
+```turtle
 @prefix cm: <http://ucl-spec.org/5.0/context-mixer#> .
 @prefix ucl_meta: <http://ucl-spec.org/5.0/metadata#> .
 @prefix ucl_style: <http://ucl-spec.org/style#> .         // Hypothetical style namespace
@@ -98,48 +98,30 @@ cm:profile:CreativeBlogPostFormal a cm:Profile ;
 
     // Define how the context guides the output
     cm:guidesOutput "The blog post should be approximately 800-1200 words, include an introduction, 3-4 main sections, and a conclusion. Use clear headings for each section." .
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Turtle
-IGNORE_WHEN_COPYING_END
+```
 
-Key Predicates Used in Profile Definition:
+## Key Predicates Used in Profile Definition:
 
-a cm:Profile (or rdf:type cm:Profile): Declares the resource as a Context Mixer Profile.
+*   `a cm:Profile` (or `rdf:type cm:Profile`): Declares the resource as a Context Mixer Profile.
+*   `schema:name`, `schema:description`, `ucl_meta:version`: Standard metadata for the profile.
+*   `cm:definesFocus`: Links the profile to one or more `cm:FocusElement` descriptions. These are often blank nodes.
+*   Within each `cm:FocusElement` description:
+    *   `a cm:FocusElement`: Declares it as a focus element.
+    *   `cm:onAspect`: A UCL-ID pointing to the specific contextual concept (e.g., `ucl_style:FormalTone`).
+    *   `cm:withWeight`: A literal (typically a float between 0 and 1) indicating importance.
+    *   `cm:withFilter`: A string literal (or a UCL-ID pointing to a filter definition) with instructions.
+*   `cm:appliesStrategy`: A UCL-ID pointing to a defined mixing strategy (e.g., `cm:strategy:WeightedPrioritization`).
+*   `cm:guidesOutput`: A string literal (or a UCL-ID pointing to an output template/schema) describing desired output characteristics.
 
-schema:name, schema:description, ucl_meta:version: Standard metadata for the profile.
+## Benefits of Using Profiles
 
-cm:definesFocus: Links the profile to one or more cm:FocusElement descriptions. These are often blank nodes.
-
-Within each cm:FocusElement description:
-
-a cm:FocusElement: Declares it as a focus element.
-
-cm:onAspect: A UCL-ID pointing to the specific contextual concept (e.g., ucl_style:FormalTone).
-
-cm:withWeight: A literal (typically a float between 0 and 1) indicating importance.
-
-cm:withFilter: A string literal (or a UCL-ID pointing to a filter definition) with instructions.
-
-cm:appliesStrategy: A UCL-ID pointing to a defined mixing strategy (e.g., cm:strategy:WeightedPrioritization).
-
-cm:guidesOutput: A string literal (or a UCL-ID pointing to an output template/schema) describing desired output characteristics.
-
-Benefits of Using Profiles
-
-Reusability: Define a profile once (e.g., for "CustomerSupportTier1") and reuse it across many messages and agents.
-
-Consistency: Ensures that similar tasks are approached with the same contextual considerations, leading to more consistent AI behavior.
-
-Maintainability: If contextual requirements change, you update the profile definition in one place, rather than modifying countless individual prompts.
-
-Abstraction: Message senders only need to know the name (UCL-ID) of the profile, not necessarily all its intricate details, simplifying prompt construction.
-
-Specialization: Allows for highly specialized contextual setups for different AI tasks (e.g., a profile for legal document analysis will be very different from one for creative poetry generation).
+*   **Reusability:** Define a profile once (e.g., for `"CustomerSupportTier1"`) and reuse it across many messages and agents.
+*   **Consistency:** Ensures that similar tasks are approached with the same contextual considerations, leading to more consistent AI behavior.
+*   **Maintainability:** If contextual requirements change, you update the profile definition in one place, rather than modifying countless individual prompts.
+*   **Abstraction:** Message senders only need to know the name (UCL-ID) of the profile, not necessarily all its intricate details, simplifying prompt construction.
+*   **Specialization:** Allows for highly specialized contextual setups for different AI tasks (e.g., a profile for legal document analysis will be very different from one for creative poetry generation).
 
 Context Mixer Profiles are the mechanism by which users and systems can explicitly "program" the contextual awareness and focus of an AI, moving beyond simple prompting to a more structured and controllable interaction.
 
-Next: Context Mixer Deep Dive: Focus Elements, Weights, and Filters
-
+## Next: Context Mixer Deep Dive: Focus Elements, Weights, and Filters
+```
