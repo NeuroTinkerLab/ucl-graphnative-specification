@@ -91,12 +91,7 @@ Purpose: Marks the end of the envelope and the beginning of the PayloadGraph.
     myprd:hasFeature "Leak-proof cap", "Biodegradable", "Lightweight design" ;
     myprd:capacity "750ml" .
 } // Conceptual end of graph block
-IGNORE_WHEN_COPYING_START
-content_copy
-download
-Use code with caution.
-Ucl
-IGNORE_WHEN_COPYING_END
+
 
 What it is: This is the core data for the operation, structured as a graph of semantic triples (Subject-Predicate-Object statements). This is a major difference from UCL 4.2's JSON-like payload.
 
